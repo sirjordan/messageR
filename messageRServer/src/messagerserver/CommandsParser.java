@@ -1,14 +1,11 @@
 package messagerserver;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
 
 public class CommandsParser {
 
-    private static final String COMMANDS_PREFIX = "-";
-
-    public static String getCommandPrefix() {
-        return COMMANDS_PREFIX;
-    }
+    public static final String COMMANDS_PREFIX = "-";
 
     public List<Command> parseCommands(String text) {
         List<Command> commands = new ArrayList<>();
