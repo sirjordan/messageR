@@ -8,6 +8,10 @@ import java.io.OutputStream;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ *
+ * @author maritn
+ */
 public final class HttpHelper {
 
     public static Map<String, String> getQueryStringValues(String queryString) {
@@ -23,7 +27,7 @@ public final class HttpHelper {
         return result;
     }
 
-    public static String geRequestBody(HttpExchange t) throws IOException {
+    public static String getRequestBody(HttpExchange t) throws IOException {
         InputStreamReader isr = new InputStreamReader(t.getRequestBody(), "utf-8");
         BufferedReader br = new BufferedReader(isr);
 

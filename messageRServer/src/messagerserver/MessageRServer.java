@@ -8,12 +8,13 @@ import java.io.IOException;
 import java.net.InetSocketAddress;
 import java.util.*;
 import java.util.logging.*;
+import messageRCore.Settings;
 
+/**
+ *
+ * @author maritn
+ */
 public class MessageRServer {
-
-    private static final String SUBMIT = "submit";
-    private static final String CHECK = "check";
-    private static final String LOGIN = "login";
 
     private static final MessageRepository MSG_REPO = new MessageRepository();
     private static final UsersManager LOGGED_USERS = new UsersManager();
@@ -26,9 +27,9 @@ public class MessageRServer {
 
             HttpServer server = HttpServer.create(new InetSocketAddress(port), 0);
 
-            server.createContext("/" + SUBMIT, new SubmitHandler());
-            server.createContext("/" + CHECK, new CheckHandler());
-            server.createContext("/" + LOGIN, new LoginHandler());
+            server.createContext("/" + Settings.Actions.SUBMIT, new SubmitHandler());
+            server.createContext("/" + Settings.Actions.CHECK, new CheckHandler());
+            server.createContext("/" + Settings.Actions.LOGIN, new LoginHandler());
 
             server.setExecutor(null);
             server.start();
@@ -42,7 +43,7 @@ public class MessageRServer {
         @Override
         public void handle(HttpExchange t) throws IOException {
             Headers h = t.getRequestHeaders();
-            String user = h.getFirst("login");
+            String user = h.getFirst(Settings.Headers.USER_NAME);
 
             String response = "Logged as @" + user;
             LOGGED_USERS.addUser(user);
@@ -61,7 +62,7 @@ public class MessageRServer {
             String receiver = qStrings.get("user");
 
             // Put the msg in the repo
-            String msgBody = HttpHelper.geRequestBody(t);
+            String msgBody = HttpHelper.getRequestBody(t);
             MSG_REPO.postMessage(receiver, msgBody);
 
             HttpHelper.postResponseMessage(t, "Msg was send successfully");

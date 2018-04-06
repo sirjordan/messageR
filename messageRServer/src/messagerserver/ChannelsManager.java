@@ -7,6 +7,10 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+/**
+ *
+ * @author maritn
+ */
 public class ChannelsManager {
     
     private static final Channel PUBLIC_CH = new Channel("@PUBLIC");

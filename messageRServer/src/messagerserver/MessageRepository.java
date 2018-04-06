@@ -2,6 +2,10 @@ package messagerserver;
 
 import java.util.*;
 
+/**
+ *
+ * @author maritn
+ */
 public class MessageRepository {
 
     private final Map<String, List<String>> messages;

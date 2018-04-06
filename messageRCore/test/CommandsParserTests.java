@@ -1,7 +1,7 @@
 
 import java.util.List;
-import messagerserver.Command;
-import messagerserver.CommandsParser;
+import messageRCore.Command;
+import messageRCore.CommandsParser;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
@@ -9,9 +9,13 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 import static org.junit.Assert.*;
 
-public class ServerTests {
+/**
+ *
+ * @author maritn
+ */
+public class CommandsParserTests {
 
-    public ServerTests() {
+    public CommandsParserTests() {
     }
 
     @BeforeClass

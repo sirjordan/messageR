@@ -48,3 +48,6 @@ Temporary Items
 /messageRClient/build/
 /messageRClient/dist/
 /messageRServer/build/
+/messageRCore/nbproject/private/
+/messageRCore/build/
+/messageRCore/dist/

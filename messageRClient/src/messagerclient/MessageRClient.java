@@ -4,47 +4,35 @@ import java.util.Scanner;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.io.*;
-import java.net.MalformedURLException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import org.omg.CORBA.Environment;
+import messageRCore.Settings;
 
+/**
+ *
+ * @author maritn
+ */
 public class MessageRClient {
 
-    private static String serverUrl = "http://localhost:619";
-    private static String submit = "submit";
-    private static String check = "check";
-    private static String login = "login";
-
     public static void main(String[] args) {
+        printGreetings();
+
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
 
         try {
             System.out.println("Log as: ");
             String usrName = br.readLine();
-
-            //System.out.println("Partner Name: ");
-            //String partner = br.readLine();
-
-            //System.out.println("Connecting as" + usrName + "... to " + "partner " + partner);
-
-            //System.out.println("Type message or \"exit\" to exit:");
-            //String msg = "";
-
-            //Scanner reader = new Scanner(System.in);
-
             connect(usrName);
 
-            /*
-            do {
-                msg = reader.nextLine();
-                postMessage(partner, msg);
-            } while (msg != "exit");
+            String line;
+            Scanner scanner = new Scanner(System.in);
 
-            reader.close();
+            while (!(line = scanner.next()).equals("exit")) {
 
+            }
+
+            scanner.close();
             System.exit(0);
-             */
         } catch (Exception ex) {
             Logger.getLogger(MessageRClient.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -52,11 +40,11 @@ public class MessageRClient {
 
     private static void connect(String loginName) {
         try {
-            URL obj = new URL(serverUrl + "/" + login);
+            URL obj = new URL(Settings.Endpoints.LOGIN);
             HttpURLConnection con = (HttpURLConnection) obj.openConnection();
 
             con.setRequestMethod("POST");
-            con.setRequestProperty("login", loginName);
+            con.setRequestProperty(Settings.Headers.USER_NAME, loginName);
             con.setDoOutput(true);
             con.setDoInput(true);
             con.getOutputStream().write(new byte[0]);
@@ -95,10 +83,9 @@ public class MessageRClient {
     }
 
     private static void postMessage(String postTo, String message) throws Exception {
-        URL obj = new URL(serverUrl + "/" + submit);
+        URL obj = new URL(Settings.Endpoints.SUBMIT);
         HttpURLConnection con = (HttpURLConnection) obj.openConnection();
 
-        //add reuqest header
         con.setRequestMethod("POST");
 
         String urlParameters = "partnerId=" + postTo;
@@ -111,5 +98,17 @@ public class MessageRClient {
         wr.close();
 
         System.out.println("\nSent to : " + postTo);
+    }
+
+    private static void printGreetings() {
+        System.out.println("******************************");
+        System.out.println("*          messageR          *");
+        System.out.println("*                            *");
+        System.out.println("*   2018 | M.Marinov @ NBU   *");
+        System.out.println("*                            *");
+        System.out.println("* Commands:                  *");
+        System.out.println("* -exit                      *");
+        System.out.println("* -help                      *");
+        System.out.println("******************************");
     }
 }

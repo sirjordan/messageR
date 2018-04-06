@@ -3,6 +3,10 @@ package messagerserver;
 import java.util.HashSet;
 import java.util.Set;
 
+/**
+ *
+ * @author maritn
+ */
 public class Channel {
 
     private final String name;

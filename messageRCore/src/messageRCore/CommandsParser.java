@@ -1,13 +1,17 @@
-package messagerserver;
+package messageRCore;
 
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ *
+ * @author maritn
+ */
 public class CommandsParser {
 
     public static final String COMMANDS_PREFIX = "-";
 
-    public List<Command> parseCommands(String text) {
+    public static List<Command> parseCommands(String text) {
         List<Command> commands = new ArrayList<>();
         String[] lines = text.split(" ");
 

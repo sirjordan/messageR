@@ -1,5 +1,9 @@
-package messagerserver;
+package messageRCore;
 
+/**
+ *
+ * @author maritn
+ */
 public class Command {
 
     private String commandName;
