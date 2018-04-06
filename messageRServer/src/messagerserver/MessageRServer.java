@@ -1,31 +1,36 @@
 package messagerserver;
 
+import com.sun.net.httpserver.Headers;
 import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpHandler;
 import com.sun.net.httpserver.HttpServer;
 import java.io.IOException;
-import java.io.OutputStream;
 import java.util.*;
-import java.io.*;
 import java.net.InetSocketAddress;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 public class MessageRServer {
 
-    private static int port = 619;
-    private static String submit = "submit";
-    private static String check = "check";
-    private static MessageRepository msgRepo = new MessageRepository();
+    private static final String SUBMIT = "submit";
+    private static final String CHECK = "check";
+    private static final String LOGIN = "login";
+
+    private static final MessageRepository MSG_REPO = new MessageRepository();
+    private static final UsersManager LOGGED_USERS = new UsersManager();
+    private static final ChannelsManager CHANNELS_MANAGER = new ChannelsManager();
 
     public static void main(String[] args) {
 
         try {
+            int port = 619;
+
             HttpServer server = HttpServer.create(new InetSocketAddress(port), 0);
-            
-            server.createContext("/" + submit, new SubmitHandler());
-            server.createContext("/" + check, new CheckHandler());
-            
+
+            server.createContext("/" + SUBMIT, new SubmitHandler());
+            server.createContext("/" + CHECK, new CheckHandler());
+            server.createContext("/" + LOGIN, new LoginHandler());
+
             server.setExecutor(null);
             server.start();
         } catch (IOException ex) {
@@ -33,35 +38,34 @@ public class MessageRServer {
         }
     }
 
+    static class LoginHandler implements HttpHandler {
+
+        @Override
+        public void handle(HttpExchange t) throws IOException {
+            Headers h = t.getRequestHeaders();
+            String user = h.getFirst("login");
+
+            String response = "Logged as @" + user;
+            LOGGED_USERS.addUser(user);
+            CHANNELS_MANAGER.joinPublicChannel(user);
+
+            HttpHelper.postResponseMessage(t, response);
+        }
+    }
+
     static class SubmitHandler implements HttpHandler {
 
         @Override
         public void handle(HttpExchange t) throws IOException {
-            // Get req msg body 
-            InputStreamReader isr = new InputStreamReader(t.getRequestBody(), "utf-8");
-            BufferedReader br = new BufferedReader(isr);
-
-            int b;
-            StringBuilder msgBody = new StringBuilder(512);
-            while ((b = br.read()) != -1) {
-                msgBody.append((char) b);
-            }
-
-            br.close();
-            isr.close();
-
-            // Get receiver id
-            Map<String, String> qStrings = queryToMap(t.getRequestURI().getQuery());
-            Integer receiverId = Integer.parseInt(qStrings.get("id"));
+            // Get receiver
+            Map<String, String> qStrings = HttpHelper.getQueryStringValues(t.getRequestURI().getQuery());
+            String receiver = qStrings.get("user");
 
             // Put the msg in the repo
-            msgRepo.postMessage(receiverId, msgBody.toString());
+            String msgBody = HttpHelper.geRequestBody(t);
+            MSG_REPO.postMessage(receiver, msgBody);
 
-            String response = "Msg was send successfully";
-            t.sendResponseHeaders(200, response.length());
-            OutputStream os = t.getResponseBody();
-            os.write(response.getBytes());
-            os.close();
+            HttpHelper.postResponseMessage(t, "Msg was send successfully");
         }
     }
 
@@ -69,10 +73,10 @@ public class MessageRServer {
 
         @Override
         public void handle(HttpExchange t) throws IOException {
-            Map<String, String> qStrings = queryToMap(t.getRequestURI().getQuery());
-            Integer id = Integer.parseInt(qStrings.get("id"));
+            Map<String, String> qStrings = HttpHelper.getQueryStringValues(t.getRequestURI().getQuery());
+            String user = qStrings.get("user");
 
-            Enumeration<String> lastMessages = msgRepo.getLastMessages(id);
+            Enumeration<String> lastMessages = MSG_REPO.getLastMessages(user);
 
             String response = "";
             if (lastMessages != null) {
@@ -80,24 +84,7 @@ public class MessageRServer {
                 response = String.join("\n", headerValuesList);
             }
 
-            t.sendResponseHeaders(200, response.length());
-
-            OutputStream os = t.getResponseBody();
-            os.write(response.getBytes());
-            os.close();
+            HttpHelper.postResponseMessage(t, response);
         }
-    }
-
-    public static Map<String, String> queryToMap(String query) {
-        Map<String, String> result = new HashMap<String, String>();
-        for (String param : query.split("&")) {
-            String pair[] = param.split("=");
-            if (pair.length > 1) {
-                result.put(pair[0], pair[1]);
-            } else {
-                result.put(pair[0], "");
-            }
-        }
-        return result;
     }
 }

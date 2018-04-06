@@ -18,13 +18,13 @@ public class MessageRClient {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
 
         try{
-            System.out.println("Enter Your Id (int):");
-            int id = Integer.parseInt(br.readLine());
+            System.out.println("Log as: ");
+            String usrName = br.readLine();
             
-            System.out.println("Enter Partner Id (int):");
-            int partnerId = Integer.parseInt(br.readLine());
+            System.out.println("Partner Name: ");
+            String partner = br.readLine();
             
-            System.out.println("Connecting with user id " + id + "... to " + "partner " + partnerId);
+            System.out.println("Connecting as" + usrName + "... to " + "partner " + partner);
 
             System.out.println("Type message fowolled or \"exit\" to exit:");
             String msg = "";
@@ -33,26 +33,23 @@ public class MessageRClient {
 
             do {
                 msg = reader.nextLine();
-                postMessage(partnerId, msg);
+                postMessage(partner, msg);
             } while (msg != "exit");
 
             reader.close();
-           
-        }catch(NumberFormatException nfe){
-            System.err.println("Invalid Format!");
         } catch (Exception ex) {
             Logger.getLogger(MessageRClient.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
     
-    private static void postMessage(int partnerId, String message) throws Exception {
+    private static void postMessage(String postTo, String message) throws Exception {
         URL obj = new URL(serverUrl + "/" + submit);
         HttpURLConnection con = (HttpURLConnection)obj.openConnection();
 
         //add reuqest header
         con.setRequestMethod("POST");
         
-        String urlParameters = "partnerId=" + partnerId;
+        String urlParameters = "partnerId=" + postTo;
 
         // Send post request
         con.setDoOutput(true);
@@ -61,6 +58,6 @@ public class MessageRClient {
         wr.flush();
         wr.close();
 
-        System.out.println("\nSent to : " + partnerId);
+        System.out.println("\nSent to : " + postTo);
     }
 }
