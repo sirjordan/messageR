@@ -1,6 +1,5 @@
 
-import java.util.HashSet;
-import java.util.List;
+import java.util.*;
 import messageRCore.CommandDeffinition;
 import messageRCore.CommandInput;
 import messageRCore.CommandsParser;
@@ -38,7 +37,7 @@ public class CommandsParserTests {
     }
 
     @Test
-    public void parsingCommands_Simple() {
+    public void extractCommands_Simple() {
         CommandsParser parser = new CommandsParser(() -> {
             return new HashSet<CommandDeffinition>() {
                 {
@@ -49,14 +48,16 @@ public class CommandsParserTests {
 
         String text_2 = "-join channelName123";
 
-        List<CommandInput> cmds_2 = parser.extractCommands(text_2);
+        Queue<CommandInput> cmds_2 = parser.extractCommands(text_2);
 
-        assertEquals(cmds_2.get(0).getCommandName(), "join");
-        assertEquals(cmds_2.get(0).getCommandArguments().get(0), "channelName123");
+        CommandInput cmd = cmds_2.poll();
+
+        assertEquals(cmd.getCommandName(), "join");
+        assertEquals(cmd.getCommandArguments().get(0), "channelName123");
     }
 
     @Test
-    public void parsingCommands_Mixed() {
+    public void extractCommands_Mixed() {
         CommandsParser parser = new CommandsParser(() -> {
             return new HashSet<CommandDeffinition>() {
                 {
@@ -66,14 +67,16 @@ public class CommandsParserTests {
         });
 
         String text_1 = "..textx -join channelName123 texttt..";
-        List<CommandInput> cmds_1 = parser.extractCommands(text_1);
+        Queue<CommandInput> cmds_1 = parser.extractCommands(text_1);
 
-        assertEquals(cmds_1.get(0).getCommandName(), "join");
-        assertEquals(cmds_1.get(0).getCommandArguments().get(0), "channelName123");
+        CommandInput cmd = cmds_1.poll();
+
+        assertEquals(cmd.getCommandName(), "join");
+        assertEquals(cmd.getCommandArguments().get(0), "channelName123");
     }
 
     @Test
-    public void parsingCommands_End() {
+    public void extractCommands_End() {
         CommandsParser parser = new CommandsParser(() -> {
             return new HashSet<CommandDeffinition>() {
                 {
@@ -83,13 +86,13 @@ public class CommandsParserTests {
         });
 
         String text_1 = "..textx -exit";
-        List<CommandInput> cmds_1 = parser.extractCommands(text_1);
+        Queue<CommandInput> cmds_1 = parser.extractCommands(text_1);
 
-        assertEquals(cmds_1.get(0).getCommandName(), "exit");
+        assertEquals(cmds_1.poll().getCommandName(), "exit");
     }
 
     @Test
-    public void parsingCommands_MultipleCommands() {
+    public void extractCommands_MultipleCommands() {
         CommandsParser parser = new CommandsParser(() -> {
             return new HashSet<CommandDeffinition>() {
                 {
@@ -101,19 +104,21 @@ public class CommandsParserTests {
         });
 
         String text_1 = "-cmd_1 arg1 ..textx... -cmd_2 arg2 ...text... -cmd_3 ... text";
-        List<CommandInput> cmds_1 = parser.extractCommands(text_1);
+        Queue<CommandInput> cmds_1 = parser.extractCommands(text_1);
 
-        assertEquals(cmds_1.get(0).getCommandName(), "cmd_1");
-        assertEquals(cmds_1.get(0).getCommandArguments().get(0), "arg1");
+        CommandInput cmd1 = cmds_1.poll();
+        assertEquals(cmd1.getCommandName(), "cmd_1");
+        assertEquals(cmd1.getCommandArguments().get(0), "arg1");
 
-        assertEquals(cmds_1.get(1).getCommandName(), "cmd_2");
-        assertEquals(cmds_1.get(1).getCommandArguments().get(0), "arg2");
+        CommandInput cmd2 = cmds_1.poll();
+        assertEquals(cmd2.getCommandName(), "cmd_2");
+        assertEquals(cmd2.getCommandArguments().get(0), "arg2");
 
-        assertEquals(cmds_1.get(2).getCommandName(), "cmd_3");
+        assertEquals(cmds_1.poll().getCommandName(), "cmd_3");
     }
 
     @Test
-    public void parsingCommands_MultipleArguments() {
+    public void extractCommands_MultipleArguments() {
         CommandsParser parser = new CommandsParser(() -> {
             return new HashSet<CommandDeffinition>() {
                 {
@@ -123,15 +128,17 @@ public class CommandsParserTests {
         });
 
         String text_1 = "-cmd_1 arg1 arg2 ..textx... ";
-        List<CommandInput> cmds_1 = parser.extractCommands(text_1);
+        Queue<CommandInput> cmds_1 = parser.extractCommands(text_1);
 
-        assertEquals(cmds_1.get(0).getCommandName(), "cmd_1");
-        assertEquals(cmds_1.get(0).getCommandArguments().get(0), "arg1");
-        assertEquals(cmds_1.get(0).getCommandArguments().get(1), "arg2");
+        CommandInput cmd = cmds_1.poll();
+
+        assertEquals(cmd.getCommandName(), "cmd_1");
+        assertEquals(cmd.getCommandArguments().get(0), "arg1");
+        assertEquals(cmd.getCommandArguments().get(1), "arg2");
     }
-    
+
     @Test
-    public void parsingCommands_MultipleCommands_MultipleArguments() {
+    public void extractCommands_MultipleCommands_MultipleArguments() {
         CommandsParser parser = new CommandsParser(() -> {
             return new HashSet<CommandDeffinition>() {
                 {
@@ -142,14 +149,36 @@ public class CommandsParserTests {
         });
 
         String text_1 = "text.. -cmd_1 arg1 arg2 ..textx... -cmd_2 arg21 arg22";
-        List<CommandInput> cmds_1 = parser.extractCommands(text_1);
+        Queue<CommandInput> cmds_1 = parser.extractCommands(text_1);
 
-        assertEquals(cmds_1.get(0).getCommandName(), "cmd_1");
-        assertEquals(cmds_1.get(0).getCommandArguments().get(0), "arg1");
-        assertEquals(cmds_1.get(0).getCommandArguments().get(1), "arg2");
+        CommandInput cmd1 = cmds_1.poll();
+
+        assertEquals(cmd1.getCommandName(), "cmd_1");
+        assertEquals(cmd1.getCommandArguments().get(0), "arg1");
+        assertEquals(cmd1.getCommandArguments().get(1), "arg2");
+
+        CommandInput cmd2 = cmds_1.poll();
+
+        assertEquals(cmd2.getCommandName(), "cmd_2");
+        assertEquals(cmd2.getCommandArguments().get(0), "arg21");
+        assertEquals(cmd2.getCommandArguments().get(1), "arg22");
+    }
+    
+    @Test
+    public void cleanFromCommands_MultipleCommands_MultipleArguments() {
+        CommandsParser parser = new CommandsParser(() -> {
+            return new HashSet<CommandDeffinition>() {
+                {
+                    add(new CommandDeffinition("cmd_1", 2));
+                    add(new CommandDeffinition("cmd_2", 2));
+                }
+            };
+        });
+
+        String text_1 = "text.. -cmd_1 arg1 arg2 ..textx... -cmd_2 arg21 arg22";
         
-         assertEquals(cmds_1.get(1).getCommandName(), "cmd_2");
-        assertEquals(cmds_1.get(1).getCommandArguments().get(0), "arg21");
-        assertEquals(cmds_1.get(1).getCommandArguments().get(1), "arg22");
+        String clean = parser.cleanFromCommands(text_1);
+        
+        assertEquals("text.. ..textx...", clean);
     }
 }

@@ -1,7 +1,6 @@
 package messageRCore;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 import messageRCore.Contracts.CommandsDefinitionSource;
 
 /**
@@ -17,8 +16,8 @@ public class CommandsParser {
         this.commandTokens = commandTokens;
     }
 
-    public List<CommandInput> extractCommands(String text) {
-        List<CommandInput> commands = new ArrayList<>();
+    public Queue<CommandInput> extractCommands(String text) {
+        Queue<CommandInput> commands = new LinkedList<>();
         String[] lines = text.split(" ");
 
         for (int i = 0; i < lines.length; i++) {
@@ -50,6 +49,16 @@ public class CommandsParser {
     }
 
     public String cleanFromCommands(String textWithCommands) {
-        throw new UnsupportedOperationException();
+        Queue<CommandInput> commands = extractCommands(textWithCommands);
+
+        CommandInput cmd = commands.poll();
+        do {
+            textWithCommands = textWithCommands.replace(COMMANDS_PREFIX + cmd.getCommandName(), "");
+            for (String commandArgument : cmd.getCommandArguments()) {
+                textWithCommands = textWithCommands.replace(commandArgument, "");
+            }
+        } while (commands.poll() != null);
+
+        return textWithCommands;
     }
 }
