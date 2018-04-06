@@ -101,14 +101,16 @@ public class MessageRClient {
     }
 
     private static void printGreetings() {
-        System.out.println("******************************");
-        System.out.println("*          messageR          *");
-        System.out.println("*                            *");
-        System.out.println("*   2018 | M.Marinov @ NBU   *");
-        System.out.println("*                            *");
-        System.out.println("* Commands:                  *");
-        System.out.println("* -exit                      *");
-        System.out.println("* -help                      *");
-        System.out.println("******************************");
+        System.out.println("*************************************************");
+        System.out.println("*                    messageR                   *");
+        System.out.println("*                                               *");
+        System.out.println("*              2018 | M.Marinov @ NBU           *");
+        System.out.println("*                                               *");
+        System.out.println("* Commands:                                     *");
+        System.out.println("* -exit                 / exit messageR /       *");
+        System.out.println("* -help                 / prints help /         *");
+        System.out.println("* -w [user]             / whisper to [user] /   *");
+        System.out.println("* -gr [user]            / greetings to [user] / *");
+        System.out.println("*************************************************");
     }
 }
