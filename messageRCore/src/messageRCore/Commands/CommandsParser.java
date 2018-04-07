@@ -1,4 +1,4 @@
-package messageRCore;
+package messageRCore.Commands;
 
 import java.util.*;
 import messageRCore.Contracts.CommandsDefinitionSource;
@@ -39,7 +39,7 @@ public class CommandsParser {
                             }
                         }
 
-                        commands.add(new CommandInput(cmd, arguments));
+                        commands.add(new CommandInput(cmd, arguments, commandDeffinition.getInterpretator()));
                     }
                 }
             }
@@ -50,14 +50,16 @@ public class CommandsParser {
 
     public String cleanFromCommands(String textWithCommands) {
         Queue<CommandInput> commands = extractCommands(textWithCommands);
-
         CommandInput cmd = commands.poll();
-        do {
-            textWithCommands = textWithCommands.replace(COMMANDS_PREFIX + cmd.getCommandName(), "");
+        
+        while (cmd != null) {
+            textWithCommands = textWithCommands.replaceFirst(" " + COMMANDS_PREFIX + cmd.getCommandName(), "");
             for (String commandArgument : cmd.getCommandArguments()) {
-                textWithCommands = textWithCommands.replace(commandArgument, "");
+                textWithCommands = textWithCommands.replaceFirst(" " + commandArgument, "");
             }
-        } while (commands.poll() != null);
+            
+            cmd = commands.poll();
+        }
 
         return textWithCommands;
     }

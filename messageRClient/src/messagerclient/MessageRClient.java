@@ -4,15 +4,21 @@ import java.util.Scanner;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.io.*;
+import java.util.Queue;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import messageRCore.Commands.CommandInput;
+import messageRCore.Commands.CommandsParser;
 import messageRCore.Settings;
+import messagerclient.Commands.ClientCommands;
 
 /**
  *
  * @author maritn
  */
 public class MessageRClient {
+
+    private static final Boolean RUN = true;
 
     public static void main(String[] args) {
         printGreetings();
@@ -22,11 +28,28 @@ public class MessageRClient {
         try {
             System.out.println("Log as: ");
             String usrName = br.readLine();
-            connect(usrName);
+            //connect(usrName);
+
+            Scanner scanner = new Scanner(System.in);
+            CommandsParser commandParser = new CommandsParser(new ClientCommands());
 
             String line;
-            Scanner scanner = new Scanner(System.in);
-
+            while (RUN) {
+                line = scanner.next();
+                
+                // Execute commands
+                Queue<CommandInput> commands = commandParser.extractCommands(line);
+                CommandInput cmd = commands.poll();
+                while (cmd != null) {
+                    cmd.Execute();
+                    cmd = commands.poll();
+                }
+                
+                // Post textWithoutCommands to server
+                String textWithoutCommands = commandParser.cleanFromCommands(line);
+                // TODO: 
+                System.out.println(textWithoutCommands);
+            }
             while (!(line = scanner.next()).equals("exit")) {
 
             }

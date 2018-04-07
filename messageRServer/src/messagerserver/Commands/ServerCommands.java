@@ -1,25 +1,26 @@
-package messagerclient;
+package messagerserver.Commands;
 
 import java.util.HashSet;
 import java.util.Set;
-import messageRCore.CommandDeffinition;
+import messageRCore.Commands.CommandDeffinition;
 import messageRCore.Contracts.CommandsDefinitionSource;
 
 /**
  *
  * @author maritn
  */
-public class ClientCommands implements CommandsDefinitionSource {
+public class ServerCommands implements CommandsDefinitionSource {
 
     @Override
     public Set<CommandDeffinition> getCommandsDefinition() {
         Set<CommandDeffinition> commands = new HashSet<CommandDeffinition>() {
             {
-                add(new CommandDeffinition("exit", 0));
-                add(new CommandDeffinition("help", 0));
+                add(new CommandDeffinition("w", 1, new Whisper()));
+                add(new CommandDeffinition("gr", 1, new Greetings()));
             }
         };
 
-       return commands;
+        return commands;
     }
+
 }

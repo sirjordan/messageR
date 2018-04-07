@@ -1,7 +1,7 @@
 package messageRCore.Contracts;
 
 import java.util.Set;
-import messageRCore.CommandDeffinition;
+import messageRCore.Commands.CommandDeffinition;
 
 /**
  *

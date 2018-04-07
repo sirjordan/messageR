@@ -1,9 +1,8 @@
 
 import java.util.*;
-import messageRCore.CommandDeffinition;
-import messageRCore.CommandInput;
-import messageRCore.CommandsParser;
-import messageRCore.Contracts.CommandsDefinitionSource;
+import messageRCore.Commands.CommandDeffinition;
+import messageRCore.Commands.CommandInput;
+import messageRCore.Commands.CommandsParser;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
@@ -41,7 +40,7 @@ public class CommandsParserTests {
         CommandsParser parser = new CommandsParser(() -> {
             return new HashSet<CommandDeffinition>() {
                 {
-                    add(new CommandDeffinition("join", 1));
+                    add(new CommandDeffinition("join", 1, null));
                 }
             };
         });
@@ -61,7 +60,7 @@ public class CommandsParserTests {
         CommandsParser parser = new CommandsParser(() -> {
             return new HashSet<CommandDeffinition>() {
                 {
-                    add(new CommandDeffinition("join", 1));
+                    add(new CommandDeffinition("join", 1, null));
                 }
             };
         });
@@ -80,7 +79,7 @@ public class CommandsParserTests {
         CommandsParser parser = new CommandsParser(() -> {
             return new HashSet<CommandDeffinition>() {
                 {
-                    add(new CommandDeffinition("exit", 0));
+                    add(new CommandDeffinition("exit", 0, null));
                 }
             };
         });
@@ -96,9 +95,9 @@ public class CommandsParserTests {
         CommandsParser parser = new CommandsParser(() -> {
             return new HashSet<CommandDeffinition>() {
                 {
-                    add(new CommandDeffinition("cmd_1", 1));
-                    add(new CommandDeffinition("cmd_2", 1));
-                    add(new CommandDeffinition("cmd_3", 0));
+                    add(new CommandDeffinition("cmd_1", 1, null));
+                    add(new CommandDeffinition("cmd_2", 1, null));
+                    add(new CommandDeffinition("cmd_3", 0, null));
                 }
             };
         });
@@ -122,7 +121,7 @@ public class CommandsParserTests {
         CommandsParser parser = new CommandsParser(() -> {
             return new HashSet<CommandDeffinition>() {
                 {
-                    add(new CommandDeffinition("cmd_1", 2));
+                    add(new CommandDeffinition("cmd_1", 2, null));
                 }
             };
         });
@@ -142,8 +141,8 @@ public class CommandsParserTests {
         CommandsParser parser = new CommandsParser(() -> {
             return new HashSet<CommandDeffinition>() {
                 {
-                    add(new CommandDeffinition("cmd_1", 2));
-                    add(new CommandDeffinition("cmd_2", 2));
+                    add(new CommandDeffinition("cmd_1", 2, null));
+                    add(new CommandDeffinition("cmd_2", 2, null));
                 }
             };
         });
@@ -169,8 +168,8 @@ public class CommandsParserTests {
         CommandsParser parser = new CommandsParser(() -> {
             return new HashSet<CommandDeffinition>() {
                 {
-                    add(new CommandDeffinition("cmd_1", 2));
-                    add(new CommandDeffinition("cmd_2", 2));
+                    add(new CommandDeffinition("cmd_1", 2, null));
+                    add(new CommandDeffinition("cmd_2", 2, null));
                 }
             };
         });
@@ -180,5 +179,22 @@ public class CommandsParserTests {
         String clean = parser.cleanFromCommands(text_1);
         
         assertEquals("text.. ..textx...", clean);
+    }
+    
+    @Test
+    public void cleanFromCommands_CommandOnly() {
+        CommandsParser parser = new CommandsParser(() -> {
+            return new HashSet<CommandDeffinition>() {
+                {
+                    add(new CommandDeffinition("help", 0, null));
+                }
+            };
+        });
+
+        String text_1 = "-help";
+        
+        String clean = parser.cleanFromCommands(text_1);
+        
+        assertEquals("", clean);
     }
 }
