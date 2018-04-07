@@ -19,6 +19,7 @@ import messagerclient.Commands.ClientCommands;
 public class MessageRClient {
 
     private static final Boolean RUN = true;
+    private static final SystemWriter writer = new SystemWriter(50);
 
     public static void main(String[] args) {
         printGreetings();
@@ -36,7 +37,7 @@ public class MessageRClient {
             String line;
             while (RUN) {
                 line = scanner.next();
-                
+
                 // Execute commands
                 Queue<CommandInput> commands = commandParser.extractCommands(line);
                 CommandInput cmd = commands.poll();
@@ -44,7 +45,7 @@ public class MessageRClient {
                     cmd.Execute();
                     cmd = commands.poll();
                 }
-                
+
                 // Post textWithoutCommands to server
                 String textWithoutCommands = commandParser.cleanFromCommands(line);
                 // TODO: 
@@ -55,7 +56,6 @@ public class MessageRClient {
             }
 
             scanner.close();
-            System.exit(0);
         } catch (Exception ex) {
             Logger.getLogger(MessageRClient.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -124,16 +124,14 @@ public class MessageRClient {
     }
 
     private static void printGreetings() {
-        System.out.println("*************************************************");
-        System.out.println("*                    messageR                   *");
-        System.out.println("*                                               *");
-        System.out.println("*              2018 | M.Marinov @ NBU           *");
-        System.out.println("*                                               *");
-        System.out.println("* Commands:                                     *");
-        System.out.println("* -exit                 / exit messageR /       *");
-        System.out.println("* -help                 / prints help /         *");
-        System.out.println("* -w [user]             / whisper to [user] /   *");
-        System.out.println("* -gr [user]            / greetings to [user] / *");
-        System.out.println("*************************************************");
+        writer.PrintBorder();
+        writer.PrintLine();
+        writer.PrintLine("messageR", 0);
+        writer.PrintLine();
+        writer.PrintLine("2018 | M.Marinov @ NBU", 0);
+        writer.PrintLine();
+        writer.PrintLine("-help /for help /", -1);
+        writer.PrintLine();
+        writer.PrintBorder();
     }
 }

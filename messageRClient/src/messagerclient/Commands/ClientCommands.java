@@ -4,6 +4,7 @@ import java.util.HashSet;
 import java.util.Set;
 import messageRCore.Commands.CommandDeffinition;
 import messageRCore.Contracts.CommandsDefinitionSource;
+import messagerclient.SystemWriter;
 
 /**
  *
@@ -16,7 +17,7 @@ public class ClientCommands implements CommandsDefinitionSource {
         Set<CommandDeffinition> commands = new HashSet<CommandDeffinition>() {
             {
                 add(new CommandDeffinition("exit", 0, new Exit()));
-                add(new CommandDeffinition("help", 0, new Help()));
+                add(new CommandDeffinition("help", 0, new Help(new SystemWriter(50))));
             }
         };
 

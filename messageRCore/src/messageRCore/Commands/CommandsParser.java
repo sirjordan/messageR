@@ -53,7 +53,7 @@ public class CommandsParser {
         CommandInput cmd = commands.poll();
         
         while (cmd != null) {
-            textWithCommands = textWithCommands.replaceFirst(" " + COMMANDS_PREFIX + cmd.getCommandName(), "");
+            textWithCommands = textWithCommands.replaceFirst(COMMANDS_PREFIX + cmd.getCommandName(), "");
             for (String commandArgument : cmd.getCommandArguments()) {
                 textWithCommands = textWithCommands.replaceFirst(" " + commandArgument, "");
             }

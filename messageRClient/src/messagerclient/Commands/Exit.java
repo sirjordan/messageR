@@ -1,6 +1,8 @@
 package messagerclient.Commands;
 
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import messageRCore.Contracts.CommandInterpetator;
 
 /**
@@ -11,6 +13,12 @@ public class Exit implements CommandInterpetator {
 
     @Override
     public void ExecuteCommand(List<String> args) {
-        System.err.println("Exiting...");
+        try {
+            System.err.println("Exiting...");
+            Thread.sleep(1000);
+            System.exit(0);
+        } catch (InterruptedException ex) {
+            Logger.getLogger(Exit.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
 }

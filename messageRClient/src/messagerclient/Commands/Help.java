@@ -1,22 +1,31 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package messagerclient.Commands;
 
 import java.util.List;
 import messageRCore.Contracts.CommandInterpetator;
+import messagerclient.SystemWriter;
 
 /**
  *
  * @author maritn
  */
-public class Help implements CommandInterpetator{
+public class Help implements CommandInterpetator {
+
+    private final SystemWriter writer;
+
+    public Help(SystemWriter writer) {
+        this.writer = writer;
+    }
 
     @Override
     public void ExecuteCommand(List<String> args) {
-        System.out.println("Helping here...");
+        writer.PrintBorder();
+        writer.PrintLine();
+        writer.PrintLine("Commands:", -1);
+        writer.PrintLine("-exit / exit messageR /", -1);
+        writer.PrintLine("-help / prints help /", -1);
+        writer.PrintLine("-w [user] / whisper to [user] /", -1);
+        writer.PrintLine("-gr [user] / greetings to [user] /", -1);
+        writer.PrintLine();
+        writer.PrintBorder();
     }
-    
 }

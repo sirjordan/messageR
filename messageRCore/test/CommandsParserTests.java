@@ -178,7 +178,7 @@ public class CommandsParserTests {
         
         String clean = parser.cleanFromCommands(text_1);
         
-        assertEquals("text.. ..textx...", clean);
+        assertEquals("text..  ..textx... ", clean);
     }
     
     @Test
